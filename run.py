@@ -20,7 +20,10 @@ def main():
     body = re.compile(r"<\s*/?\s*body\s*>")
     tag = re.compile("<(.*)")
     # doc = re.compile(r"\s*<div class=\"list-docs-i?!>*>")
-    doc = re.compile(r"<div\s*class=\"list-docs-*>")
+    doc = re.compile(r"\s*<div\s*class=\"list-docs-i\s*[\s\w\-]*\">\s*" +
+                     "<div\s*class=\"title\".*>\s*<a\s*href=\"(.*)\".*>(.*)</a>\s*</div>([^<]*)" +
+                     "\s*<(.*?)>", re.MULTILINE | re.DOTALL)
+    #                 # "<div\s*class=\"reg\".*>(.*)</div>", re.DOTALL)
 
     parts = body.split(content)
     main_part = parts[1].decode('cp1251').encode('utf8')
@@ -39,6 +42,15 @@ def main():
     for d in doclist:
         print(d)
         print('_' * 80)
+
+    for i in doc.finditer(main_part):
+        print("="*80)
+        for j in range(10):
+            try:
+                print(i.group(j))
+            except IndexError:
+                print("...")
+            print("-" * 80)
 
 
 if __name__ == "__main__":
